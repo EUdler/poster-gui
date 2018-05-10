@@ -2,19 +2,24 @@
 <html lang="en">
   <head>
     <!-- Required meta tags -->
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{{ name }}{% endblock %}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-
-    <title>Hello, world!</title>
   </head>
   <body>
     <div class="row">
         <div class="col-6 offset-3">
-            <p>Hello, world!</p>
+            {% for food in foods %}
+                <ul style="list-style-type: none;">
+                    <li>
+                        <input type="checkbox" id="{{ food }}" name="{{ food }}"/>
+                        <label for="{{ food }}">{{ food }}</label>
+                    </li>
+                </ul>
+            {% endfor %}
         </div>
         
     </div>

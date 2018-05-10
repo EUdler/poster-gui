@@ -1,10 +1,15 @@
+"""
+Code provided by Nadia Udler, I've been asked to provide a front end.
+"""
+
+
 import scipy.optimize as sopt
 import numpy as np
 
-food_names = ["broccoli", "apple", "oatmeal coockie", "milk", "chicken", "omelette"]
+food_names = ["broccoli", "apple", "oatmeal cookie", "milk", "chicken", "omelet"]
 
 # List of nutritional parameters - see more on Excel spreadsheet/NutritionFacts
-parameters = ["cost", "fat", "vitA", "vitC", "protein", "calories", "carbohidrates", "calcium"]
+parameters = ["cost", "fat", "vitA", "vitC", "protein", "calories", "carbohydrates", "calcium"]
 
 foods = {'fat': [0.80, 0.50, 3.3, 4.7, 10.8, 7.3],
          'vitA': [70.0, 73.10, 2.9, 100, 77.4, 409.2],
@@ -13,9 +18,7 @@ foods = {'fat': [0.80, 0.50, 3.3, 4.7, 10.8, 7.3],
          'protein': [8.00, 0.30, 1.1, 8.1, 42.2, 6.7],
          'calories': [74.00, 81.40, 81.0, 121.2, 227.2, 99.6],
          'carbohydrates': [13.6, 21.00, 12.4, 11.7, 0.02, 1.3],
-         'calcium': [159.00, 9.7, 6.7, 302.3, 21.9, 42.6]
-
-         }
+         'calcium': [159.00, 9.7, 6.7, 302.3, 21.9, 42.6]}
 
 
 def re_solve(a, b, bounds, is_smaller, is_min, new_demand=None, new_constraint=None, new_objective=None):
