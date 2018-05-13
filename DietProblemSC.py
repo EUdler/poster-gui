@@ -1,3 +1,17 @@
+#If too many nutrient values are zero, it may return "null." If res.x returns 
+#nan, just tell the user that there exists no diet within their constraints.
+
+#If you get a negative y, apparently that's typical and means you were maximizing 
+#rather than minimizing a value.
+
+#The first input is not via the tuple, or it would run forever
+
+#Note that the concession is the current bound PLUS what you enter as the concession
+
+#Instead of cost, the initial value being optimized is 'Energ_Kcal', energy in kilocalories. Then you can select a new nutrient as the target, enter the name given in ABBREV.xlsx
+
+
+
 import scipy.optimize as sopt
 import numpy as np
 from xlrd import open_workbook,XL_CELL_TEXT
@@ -49,22 +63,9 @@ print(edibleFoodsDict)
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
-'''
-#list of foods
-foodnames=["broccoli","apple","oatmeal cookie","milk","chicken","omelette"]
-#list of nutritional parametrs - see more on Excel spreadsheet/NutritionFacts
-nutri=["cost","fat","vitA","vitC","protein","calories","carbohydrates", "calcium"]
-foods={'fat':[0.80,0.50,3.3,4.7,10.8,7.3],
-       'vitA':[70.0,73.10,2.9,100,77.4,409.2],
-       'vitC':[160.20,7.90,0.1,2.3,2.0,0.1],
-       'cost':[0.16,0.24,0.09,0.23,0.84,0.11],
-       'protein':[8.00,0.30,1.1,8.1,42.2,6.7],
-       'calories':[74.00,81.40,81.0,121.2,227.2,99.6],
-       'cabohydrates':[13.6,21.00,12.4,11.7,0.02,1.3],
-       'calcium':[159.00,9.7,6.7,302.3,21.9,42.6]
-       #add more if you like
-}
-'''
+#Here's a replacement for the sequential input
+userInput = (1, 4, 'Ash_(g)', 1, 1)
+
 foods = edibleFoodsDict
 
 #Amatrix A - nutrient in one unit of each food
@@ -93,23 +94,23 @@ print(res)
 
 while True:
     print('current solution: x=', res.x, 'y=', res.fun)
-    yesno=input('would you like to re-solve with new objective? 1 for"yes", 0 for "no": ')
-    if int(yesno)==1:
-        prevObj=newObj
-        concession=input('enter a concession for current solution: ')
+    yesno=input("Resolve with new concession? 1 for Yes, 0 for No: ") #Do you want to re-solve?
+    if int(yesno) == 1:
+        prevObj = newObj
+        concession = userInput[1] #This is the concession
         f_value=res.fun
-        newDemand=f_value+float(concession)
-        newConstr=prevObj
-        inp=input('enter new objective: ')
-        newObj=foods[inp]
-        is_newmin=input('enter 1 for min in new objective, and -1 for max: ')
-        is_oldmin=input('enter 1 for min in old objective, and -1 for max: ')
-        newObj=float(is_newmin)*np.array(newObj).flatten()
-        v=float(is_oldmin)*newDemand  
-        b=np.append(b,v)
-        newConstr=float(is_oldmin)*(np.array(newConstr)).flatten() 
-        A=np.vstack((A,newConstr)) 
-        res= sopt.linprog(c=newObj,A_ub=A,b_ub=b,bounds=Bounds)
+        newDemand = f_value + float(concession)
+        newConstr = prevObj
+        inp = userInput[2] #this is the objective
+        newObj = foods[inp]
+        is_newmin = userInput[3]
+        is_oldmin = userInput[4]
+        newObj = float(is_newmin)*np.array(newObj).flatten()
+        v = float(is_oldmin)*newDemand  
+        b = np.append(b,v)
+        newConstr = float(is_oldmin)*(np.array(newConstr)).flatten() 
+        A = np.vstack((A,newConstr)) 
+        res = sopt.linprog(c=newObj,A_ub=A,b_ub=b,bounds=Bounds)
         #///////////////////////////////////////////////////////////////////////////////////
         #After our first re-solve, we can output this dictionary
         solution =  {inp: #The key of this dict is the objective, extremely intuitively named "inp"
